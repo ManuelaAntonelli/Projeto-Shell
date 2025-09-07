@@ -3,8 +3,12 @@ import shlex
 import subprocess
 import os
 
+historico = []
+
 def main():
     """Função principal do programa Shell"""
+    global historico
+
     while True:
         try:
 
@@ -23,7 +27,11 @@ def main():
                 continue 
 
             elif argumentos[0] in ['history', '!!'] or argumentos[0].startswith('!'):
-                print("[comandos de histórico]")
+                hist(argumentos[0])
+                continue
+
+            elif argumentos[0] == "cls":
+                os.system('cls')
                 continue
             
             #Realiza um relatório sobre tudo que ocorreu na função digitada, capture_output=True, torna possível que eu manipule o programa pela variável que eu criei, text=True, converte os bits em str 
@@ -43,5 +51,34 @@ def main():
             sys.exit(0)
         except Exception as e:
             print(f"Ocorreu um erro: {e}")
+
+def hist(comando):
+    global historico
+
+    if comando == "history":
+        for i, c in enumerate (historico):
+            print(f'{i}: {' '.join(c)}')
+        return
+    
+    if comando == '!!':
+        if len(comando) < 2:
+            print('Nao ha comandos anteriores.')
+            return
+        cmd = historico[-2]
+        print(f'Executando último comando: {historico [-2]}')
+        subprocess.run(cmd)
+        return
+    
+    if comando.startswith('!'):
+        try:
+            index = int(comando[1:])
+            cmd = historico[index]
+            print(f"Executando comando {index}: {' '.join(cmd)}")
+            subprocess.run(cmd)
+        except ValueError:
+            print('Ocorreu um erro de valor')
+        except IndexError:
+            print('Houve um erro de indexacao')
+        return   
 
 main()
