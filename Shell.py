@@ -30,9 +30,14 @@ def main():
                 hist(argumentos[0])
                 continue
 
-            elif argumentos[0] == "cls":
-                os.system('cls')
+            elif platform.system() == "Windows" and argumentos[0] == 'cls':
+                os.system(argumentos[0])
                 continue
+            
+            #plataform identifica o S.O. e o cmd abre o propmt de comando , com \c para executar o comando e fechar logo em seguida
+            elif platform.system() == "Windows" and argumentos[0].lower() in Comandos_Internos:
+                argumentos = ['cmd', '/c', comando]
+
             
             #Realiza um relatório sobre tudo que ocorreu na função digitada, capture_output=True, torna possível que eu manipule o programa pela variável que eu criei, text=True, converte os bits em str 
             processo = subprocess.run(argumentos, capture_output=True, text=True)
@@ -82,3 +87,4 @@ def hist(comando):
         return   
 
 main()
+
