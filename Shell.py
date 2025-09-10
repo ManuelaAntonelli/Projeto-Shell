@@ -23,6 +23,7 @@ def main():
 
             #Irá separar cada palavra escrita na variável "comando" em um array de str
             argumentos = shlex.split(comando)
+            historico.append(argumentos)
 
             if argumentos[0] == 'cd':
                 print("['cd']")
@@ -89,6 +90,7 @@ def hist(comando):
         return   
 
 main()
+
 
 
 
