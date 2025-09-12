@@ -10,12 +10,13 @@ Comandos_Internos = ["assoc", "arp", "attrib", "break", "bcdboot", "bcdedit", "c
 def main():
     """Função principal do programa Shell"""
     global historico
-
+    print("=" *225)
+    print("=" *110)
     while True:
         try:
 
             #Armazena na variável 'comando' a entrada que o usuário fez
-            comando = input(">> ")
+            comando = input(">>> ")
 
             #Verifica se o usuário digitou algo
             if not comando.strip():
@@ -28,13 +29,27 @@ def main():
             if argumentos[0] == "cd":
                 try:
                     if len(argumentos) == 1:
-                        os.chdir(os.path.expanduser("~"))  #se digitar so cd volta pro inicio
+                        # Se digitar só 'cd', volta para o diretório home
+                        caminho = os.path.expanduser("~")
                     else:
+                        # Se especificar um caminho
                         caminho = argumentos[1]
+                    
+                    # Expande variáveis de ambiente e normaliza o caminho
+                    caminho = os.path.expandvars(caminho)  # Ex: %SystemRoot%
+                    caminho = os.path.expanduser(caminho)  # Ex: ~
+                    caminho = os.path.abspath(caminho)     # Caminho absoluto
+                    
+                    if os.path.isdir(caminho):
                         os.chdir(caminho)
-                    print(f"Diretório atual: {os.getcwd()}")
+                        print(f"Diretório atual: {os.getcwd()}")
+                    else:
+                        print("Diretório não encontrado.")
+                        
                 except FileNotFoundError:
                     print("Diretório não encontrado.")
+                except PermissionError:
+                    print("Sem permissão para acessar este diretório.")
                 except Exception as e:
                     print(f"Erro ao mudar de diretório: {e}")
                 continue
