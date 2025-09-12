@@ -25,10 +25,20 @@ def main():
             argumentos = shlex.split(comando)
             historico.append(argumentos)
 
-            if argumentos[0] == 'cd':
-                print("['cd']")
-                continue 
-
+            if argumentos[0] == "cd":
+                try:
+                    if len(argumentos) == 1:
+                        os.chdir(os.path.expanduser("~"))  #se digitar so cd volta pro inicio
+                    else:
+                        caminho = argumentos[1]
+                        os.chdir(caminho)
+                    print(f"Diretório atual: {os.getcwd()}")
+                except FileNotFoundError:
+                    print("Diretório não encontrado.")
+                except Exception as e:
+                    print(f"Erro ao mudar de diretório: {e}")
+                continue
+            
             elif argumentos[0] in ['history', '!!'] or argumentos[0].startswith('!'):
                 hist(argumentos[0])
                 continue
@@ -90,8 +100,6 @@ def hist(comando):
         return   
 
 main()
-
-
 
 
 
