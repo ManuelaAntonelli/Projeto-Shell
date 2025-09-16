@@ -4,6 +4,11 @@ import subprocess
 import os
 import platform
 
+# Códigos de cores ANSI
+VERDE = "\033[92m"
+VERMELHO = "\033[91m"
+RESET = "\033[0m"
+
 historico = []
 Comandos_Internos = ["assoc", "arp", "attrib", "break", "bcdboot", "bcdedit", "cacls", "call", "chcp", "chdir", "chkdsk", "chkntfs", "cmd", "color", "comp", "compact", "convert", "copy", "date", "del", "dir", "diskpart", "doskey", "driverquery", "echo", "endlocal", "erase", "exit", "fc", "find", "findstr", "for", "format", "fsutil", "ftype", "goto", "gpresult", "graftabl", "help", "hostname", "icacls", "if", "label", "md", "mkdir", "mklink", "mode", "more", "move", "openfiles", "path", "pause", "popd", "print", "prompt", "pushd", "rd", "recover", "rem", "ren", "rename", "replace", "rmdir", "robocopy", "route", "runas", "schtasks", "sc", "set", "setlocal", "sfc", "shutdown", "shift", "sort", "start", "subst", "systeminfo", "takeown", "taskkill", "tasklist", "time", "timeout", "title", "tree", "type", "ver", "verify", "vol", "xcopy", "wmic"]
 
@@ -15,7 +20,7 @@ def main():
         try:
 
             #Armazena na variável 'comando' a entrada que o usuário fez
-            comando = input(f'{os.getcwd()}>')
+            comando = input(f'{VERDE}{os.getcwd()} >> {RESET}')
 
             #Verifica se o usuário digitou algo
             if not comando.strip():
@@ -41,16 +46,16 @@ def main():
                     
                     if os.path.isdir(caminho):
                         os.chdir(caminho)
-                        print(f"Diretório atual: {os.getcwd()}")
+                        print(f"{VERDE}Diretório atual: {os.getcwd()}{RESET}")
                     else:
-                        print("Diretório não encontrado.")
+                        print(f"{VERMELHO}Diretório não encontrado.{RESET}")
                         
                 except FileNotFoundError:
-                    print("Diretório não encontrado.")
+                    print(f"{VERMELHO}Diretório não encontrado.{RESET}")
                 except PermissionError:
-                    print("Sem permissão para acessar este diretório.")
+                    print(f"{VERMELHO}Sem permissão para acessar este diretório.{RESET}")
                 except Exception as e:
-                    print(f"Erro ao mudar de diretório: {e}")
+                    print(f"{VERMELHO}Erro ao mudar de diretório: {e}{RESET}")
                 continue
             
             elif argumentos[0] in ['history', '!!'] or argumentos[0].startswith('!'):
@@ -71,53 +76,47 @@ def main():
 
             #Há a saída do que foi requerido ou aviso de erro
             if processo.stdout:
-                print(processo.stdout, end="")
+                print(f"{VERDE}{processo.stdout}{RESET}", end="")
             if processo.stderr:
-                print(processo.stderr, end="")
+                print(f"{VERMELHO}{processo.stderr}{RESET}", end="")
 
         except FileNotFoundError:
-            print(f"Comando não encontrado: {argumentos[0]}")
+            print(f"{VERMELHO}Comando não encontrado: {argumentos[0]}{RESET}")
         except KeyboardInterrupt:
             # O usuário ao clicar em "Ctrl + c" sai do programa
-            print("Saindo do programa")
+            print(f"{VERMELHO}Saindo do programa{RESET}")
             sys.exit(0)
         except Exception as e:
-            print(f"Ocorreu um erro: {e}")
+            print(f"{VERMELHO}Ocorreu um erro: {e}{RESET}")
 
 def hist(comando):
     global historico
 
     if comando == "history":
         for i, c in enumerate (historico):
-            print(f"{i}: {' '.join(c)}")
+            print(f"{VERDE}{i}: {' '.join(c)}{RESET}")
         return
     
     if comando == '!!':
-        if len(historico) < 2: #mudei(comando) para (historico) porque antes tava pegando o tamanho da str
-            print('Nao há comandos anteriores.')
+        if len(historico) < 2:
+            print(f'{VERMELHO}Nao há comandos anteriores.{RESET}')
             return
         cmd = historico[-2]
-        print(f"Executando último comando: {' '.join(cmd)}") #Aqui tava fazendo aparecer erro porque ta usando "c", mas dentro desse bloco não tem essa variável. Quem existe é a cmd, aí eu pego ela 
-        comando_str = "".join(cmd) #cmd é uma lista, então fiz ela de string
-        subprocess.run(comando_str, shell=True) #o shell true faz o python não rodar de uma vez o dir, mas vai mandar o comando para o interpretador do sistema
+        print(f"{VERDE}Executando último comando: {' '.join(cmd)}{RESET}")
+        comando_str = " ".join(cmd)
+        subprocess.run(comando_str, shell=True)
         return
     
     if comando.startswith("!"):
         try:
             index = int(comando[1:])
             cmd = historico[index]
-            print(f"Executando comando {index}: {' '.join(cmd)}")
-            subprocess.run(cmd, shell=True) #
+            print(f"{VERDE}Executando comando {index}: {' '.join(cmd)}{RESET}")
+            subprocess.run(cmd, shell=True)
         except ValueError:
-            print("Erro: índice inválido!!")
+            print(f"{VERMELHO}Erro: índice inválido!!{RESET}")
         except IndexError:
-            print("Erro: número fora do histórico!!")
+            print(f"{VERMELHO}Erro: número fora do histórico!!{RESET}")
         return   
 
 main()
-
-"""Em um dos testes que eu fiz, apareceu que history não é reconhecido como um comando interno, mas fui 
-pesquisar e vescobri que é um comando do nosso shell aqui em py, mas não existe no cmd do windows"""
-
-
-
