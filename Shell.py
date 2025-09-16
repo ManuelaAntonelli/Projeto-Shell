@@ -47,7 +47,7 @@ def main():
                     
                     if os.path.isdir(caminho):
                         os.chdir(caminho)
-                      print(f"{os.getcwd()}")
+                        print(f"{os.getcwd()}")
                     else:
                         print(f"{VERMELHO}Diretório não encontrado.{VERDE}")
                         
