@@ -1,1 +1,1 @@
-Projeto de crriação de um shell. Utilizando linguagem python.
+Projeto de criação de um shell. Utilizando linguagem python.
