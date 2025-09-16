@@ -4,19 +4,22 @@ import subprocess
 import os
 import platform
 
+VERMELHO = '\033[31m'
+VERDE = '\033[32m'
+RESETAR = '\033[0m'
 historico = []
 Comandos_Internos = ["assoc", "arp", "attrib", "break", "bcdboot", "bcdedit", "cacls", "call", "chcp", "chdir", "chkdsk", "chkntfs", "cmd", "color", "comp", "compact", "convert", "copy", "date", "del", "dir", "diskpart", "doskey", "driverquery", "echo", "endlocal", "erase", "exit", "fc", "find", "findstr", "for", "format", "fsutil", "ftype", "goto", "gpresult", "graftabl", "help", "hostname", "icacls", "if", "label", "md", "mkdir", "mklink", "mode", "more", "move", "openfiles", "path", "pause", "popd", "print", "prompt", "pushd", "rd", "recover", "rem", "ren", "rename", "replace", "rmdir", "robocopy", "route", "runas", "schtasks", "sc", "set", "setlocal", "sfc", "shutdown", "shift", "sort", "start", "subst", "systeminfo", "takeown", "taskkill", "tasklist", "time", "timeout", "title", "tree", "type", "ver", "verify", "vol", "xcopy", "wmic"]
 
 def main():
     """Função principal do programa Shell"""
+    print(VERDE)
     global historico
-    print("=" *225)
-    print("=" *110)
+    os.system('cls')
     while True:
         try:
 
             #Armazena na variável 'comando' a entrada que o usuário fez
-            comando = input(">>> ")
+            comando = input(f'{os.getcwd()}>')
 
             #Verifica se o usuário digitou algo
             if not comando.strip():
@@ -42,16 +45,15 @@ def main():
                     
                     if os.path.isdir(caminho):
                         os.chdir(caminho)
-                        print(f"Diretório atual: {os.getcwd()}")
                     else:
                         print("Diretório não encontrado.")
                         
                 except FileNotFoundError:
-                    print("Diretório não encontrado.")
+                    print(VERMELHO + "Diretório não encontrado." + VERDE)
                 except PermissionError:
-                    print("Sem permissão para acessar este diretório.")
+                    print(VERMELHO +"Sem permissão para acessar este diretório." + VERDE)
                 except Exception as e:
-                    print(f"Erro ao mudar de diretório: {e}")
+                    print(f"{VERMELHO}Erro ao mudar de diretório: {e}{VERDE}")
                 continue
             
             elif argumentos[0] in ['history', '!!'] or argumentos[0].startswith('!'):
@@ -77,13 +79,13 @@ def main():
                 print(processo.stderr, end="")
 
         except FileNotFoundError:
-            print(f"Comando não encontrado: {argumentos[0]}")
+            print(f"{VERMELHO}Comando não encontrado: {argumentos[0]}{VERDE}")
         except KeyboardInterrupt:
             # O usuário ao clicar em "Ctrl + c" sai do programa
-            print("Saindo do programa")
+            print( VERMELHO + "Saindo do programa"+VERDE)
             sys.exit(0)
         except Exception as e:
-            print(f"Ocorreu um erro: {e}")
+            print(f"{VERMELHO}Ocorreu um erro: {e}{VERDE}")
 
 def hist(comando):
     global historico
@@ -109,12 +111,16 @@ def hist(comando):
             print(f"Executando comando {index}: {' '.join(cmd)}")
             subprocess.run(cmd)
         except ValueError:
-            print('Ocorreu um erro de valor')
+            print(VERMELHO + 'Ocorreu um erro de valor'+ VERDE)
         except IndexError:
-            print('Houve um erro de indexacao')
+            print(VERMELHO + 'Houve um erro de indexacao' + VERDE)
         return   
 
 main()
+
+
+
+
 
 
 
