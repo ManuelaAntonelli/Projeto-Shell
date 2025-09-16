@@ -4,7 +4,7 @@ import subprocess
 import os
 import platform
 
-# Códigos de cores ANSI
+# Códigos de cores 
 VERDE = "\033[92m"
 VERMELHO = "\033[91m"
 RESET = "\033[0m"
@@ -15,12 +15,13 @@ Comandos_Internos = ["assoc", "arp", "attrib", "break", "bcdboot", "bcdedit", "c
 def main():
     """Função principal do programa Shell"""
     global historico
+    print(VERDE)
     os.system("cls")
     while True:
         try:
 
             #Armazena na variável 'comando' a entrada que o usuário fez
-            comando = input(f'{VERDE}{os.getcwd()} >> {RESET}')
+            comando = input(f'{os.getcwd()} >')
 
             #Verifica se o usuário digitou algo
             if not comando.strip():
@@ -46,16 +47,16 @@ def main():
                     
                     if os.path.isdir(caminho):
                         os.chdir(caminho)
-                        print(f"{VERDE}Diretório atual: {os.getcwd()}{RESET}")
+                      print(f"{os.getcwd()}")
                     else:
-                        print(f"{VERMELHO}Diretório não encontrado.{RESET}")
+                        print(f"{VERMELHO}Diretório não encontrado.{VERDE}")
                         
                 except FileNotFoundError:
-                    print(f"{VERMELHO}Diretório não encontrado.{RESET}")
+                    print(f"{VERMELHO}Diretório não encontrado.{VERDE}")
                 except PermissionError:
-                    print(f"{VERMELHO}Sem permissão para acessar este diretório.{RESET}")
+                    print(f"{VERMELHO}Sem permissão para acessar este diretório.{VERDE}")
                 except Exception as e:
-                    print(f"{VERMELHO}Erro ao mudar de diretório: {e}{RESET}")
+                    print(f"{VERMELHO}Erro ao mudar de diretório: {e}{VERDE}")
                 continue
             
             elif argumentos[0] in ['history', '!!'] or argumentos[0].startswith('!'):
@@ -76,33 +77,33 @@ def main():
 
             #Há a saída do que foi requerido ou aviso de erro
             if processo.stdout:
-                print(f"{VERDE}{processo.stdout}{RESET}", end="")
+                print(f"{processo.stdout}", end="")
             if processo.stderr:
-                print(f"{VERMELHO}{processo.stderr}{RESET}", end="")
+                print(f"{VERMELHO}{processo.stderr}{VERDE}", end="")
 
         except FileNotFoundError:
-            print(f"{VERMELHO}Comando não encontrado: {argumentos[0]}{RESET}")
+            print(f"{VERMELHO}Comando não encontrado: {argumentos[0]}{VERDE}")
         except KeyboardInterrupt:
             # O usuário ao clicar em "Ctrl + c" sai do programa
-            print(f"{VERMELHO}Saindo do programa{RESET}")
+            print(f"{VERMELHO}Saindo do programa{VERDE}")
             sys.exit(0)
         except Exception as e:
-            print(f"{VERMELHO}Ocorreu um erro: {e}{RESET}")
+            print(f"{VERMELHO}Ocorreu um erro: {e}{VERDE}")
 
 def hist(comando):
     global historico
 
     if comando == "history":
         for i, c in enumerate (historico):
-            print(f"{VERDE}{i}: {' '.join(c)}{RESET}")
+            print(f"{i}: {' '.join(c)}")
         return
     
     if comando == '!!':
         if len(historico) < 2:
-            print(f'{VERMELHO}Nao há comandos anteriores.{RESET}')
+            print(f'{VERMELHO}Nao há comandos anteriores.{VERDE}')
             return
         cmd = historico[-2]
-        print(f"{VERDE}Executando último comando: {' '.join(cmd)}{RESET}")
+        print(f"Executando último comando: {' '.join(cmd)}")
         comando_str = " ".join(cmd)
         subprocess.run(comando_str, shell=True)
         return
@@ -111,12 +112,12 @@ def hist(comando):
         try:
             index = int(comando[1:])
             cmd = historico[index]
-            print(f"{VERDE}Executando comando {index}: {' '.join(cmd)}{RESET}")
+            print(f"Executando comando {index}: {' '.join(cmd)}")
             subprocess.run(cmd, shell=True)
         except ValueError:
-            print(f"{VERMELHO}Erro: índice inválido!!{RESET}")
+            print(f"{VERMELHO}Erro: índice inválido!!{VERDE}")
         except IndexError:
-            print(f"{VERMELHO}Erro: número fora do histórico!!{RESET}")
+            print(f"{VERMELHO}Erro: número fora do histórico!!{VERDE}")
         return   
 
 main()
