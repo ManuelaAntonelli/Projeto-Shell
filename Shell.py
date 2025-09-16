@@ -10,13 +10,12 @@ Comandos_Internos = ["assoc", "arp", "attrib", "break", "bcdboot", "bcdedit", "c
 def main():
     """Função principal do programa Shell"""
     global historico
-    print("=" *225)
-    print("=" *110)
+    os.system("cls")
     while True:
         try:
 
             #Armazena na variável 'comando' a entrada que o usuário fez
-            comando = input(">>> ")
+            comando = input(f'{os.getcwd()}>')
 
             #Verifica se o usuário digitou algo
             if not comando.strip():
